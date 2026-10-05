@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "aalto": {
+      "type": "http",
+      "url": "https://aalto.app/mcp"
+    }
+  }
+}

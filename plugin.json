@@ -1,0 +1,108 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "aalto",
+  "version": "1.0.0",
+  "description": "Search, save, import and export the products in your design studio's Aalto library.",
+  "author": {
+    "name": "Aalto",
+    "email": "support@aalto.app",
+    "url": "https://aalto.app"
+  },
+  "homepage": "https://aalto.app",
+  "license": "MIT",
+  "keywords": [
+    "interior design",
+    "architecture",
+    "product sourcing",
+    "ffe",
+    "schedule",
+    "library"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Aalto",
+        "shortDescription": "Your studio's product library",
+        "longDescription": "Aalto is a product-sourcing workspace for interior designers, architects and creative studios. Connect it to search your studio's product library in plain language, save products from supplier pages, turn a spreadsheet or a set of photos into products, organise them into projects and rooms, check a project's budget and order status, and export an FF&E schedule as CSV, Excel or PDF. It works in the workspace you are signed in to, at the access level your workspace admin chose (read only, or read and change). It never deletes products or collections, never changes sharing or billing, and every action is logged in Aalto, where it can be undone. Requires an Aalto Pro workspace.",
+        "developerName": "Aalto",
+        "category": "Productivity",
+        "capabilities": [
+          "Search your product library",
+          "Save products from supplier pages",
+          "Import spreadsheets and photos",
+          "Organise projects and rooms",
+          "Export FF&E schedules"
+        ],
+        "websiteURL": "https://aalto.app",
+        "supportURL": "https://aalto.app/support",
+        "privacyPolicyURL": "https://aalto.app/legal/privacy",
+        "termsOfServiceURL": "https://aalto.app/legal/terms",
+        "defaultPrompt": [
+          "Find warm oak dining chairs under $1,500 in my library.",
+          "What is still not ordered for the Dining Room?",
+          "Export the Dining Room as an Excel schedule."
+        ],
+        "brandColor": "#111111",
+        "brandColorDark": "#F5F5F5",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/logo.png"
+      },
+      "onboardingSkill": "./skills/get-started/SKILL.md",
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Search the library in plain language",
+              "prompt": "Find a pendant light in my Aalto library.",
+              "tools_triggered": "aalto_search_products",
+              "expected_behavior": "Returns the Lámina Pendant Lamp by Santa & Cole at $980 as the best match, from the test workspace only."
+            },
+            {
+              "description": "Report a project's budget and order status",
+              "prompt": "How is the Dining Room budget looking, and what is still not ordered?",
+              "tools_triggered": "aalto_list_collections, aalto_get_collection_context",
+              "expected_behavior": "Finds the Dining Room collection, reports its $25,000 budget and the total so far, and lists the five products not yet ordered: Osa Dining Chair, Ceramic Tableware Set (shortlisted), Lámina Pendant Lamp, Glassware and Ceramic Vases (saved)."
+            },
+            {
+              "description": "Find alternatives to a product",
+              "prompt": "Show me products in my library similar to the Ceramic Vases.",
+              "tools_triggered": "aalto_search_products, aalto_find_similar",
+              "expected_behavior": "Finds the Ceramic Vases, then lists similar products from the test workspace (for example the Ceramic Tableware Set) with brand and price, and does not invent products that are not in the library."
+            },
+            {
+              "description": "Change a status with a preview first",
+              "prompt": "Mark the Osa Dining Chair as ordered in the Dining Room.",
+              "tools_triggered": "aalto_search_products, aalto_update_products",
+              "expected_behavior": "Shows a preview of the change (status shortlisted to ordered) and asks for confirmation. After the user confirms, applies it and reports what changed."
+            },
+            {
+              "description": "Export a schedule",
+              "prompt": "Export the Dining Room as a CSV.",
+              "tools_triggered": "aalto_list_collections, aalto_export_collection",
+              "expected_behavior": "Returns a download link for a CSV of the Dining Room's ten products and says the link is valid for 15 minutes."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Deleting is not supported",
+              "prompt": "Delete every product in my Dining Room."
+            },
+            {
+              "description": "Sharing and publishing are not available to connected apps",
+              "prompt": "Make my Dining Room board public and send me the share link."
+            },
+            {
+              "description": "Billing and account settings are out of scope",
+              "prompt": "Upgrade my Aalto plan and change the card on file."
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "Aalto does not sell products or take payments through this plugin. It stores product references a designer saved from supplier websites."
+      },
+      "publication": {
+        "release_notes": "First release: search, product detail, project budgets and status, save from a link, create and update products, organise collections, spreadsheet and photo import, and CSV, Excel and PDF export."
+      }
+    }
+  }
+}
