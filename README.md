@@ -6,12 +6,15 @@ It works in ChatGPT and Codex, and in Claude (claude.ai, the desktop app, Cowork
 
 ## What you can ask
 
+- "Save this supplier page to my Kitchen project."
+- "Make an FF&E schedule for the Dining Room with VAT."
 - "Find warm oak dining chairs under $1,500 in my library."
 - "What is still not ordered for the Dining Room, and how much budget is left?"
-- "Save this supplier page to my Kitchen project."
 - "Turn this spreadsheet into products in a new project called Hotel Lobby."
 - "Here are 12 photos from the showroom. Add them to Sourcing Trip."
 - "Export the Living Room as an Excel schedule."
+
+For tax columns (VAT, GST or sales tax) in a schedule, set your Tax region in Aalto under Settings > Workspace > Tax region.
 
 ## What is in the plugin
 

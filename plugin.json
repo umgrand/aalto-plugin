@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "aalto",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Search, save, import and export the products in your design studio's Aalto library.",
   "author": {
     "name": "Aalto",
@@ -38,9 +38,9 @@
         "privacyPolicyURL": "https://aalto.app/legal/privacy",
         "termsOfServiceURL": "https://aalto.app/legal/terms",
         "defaultPrompt": [
-          "Find warm oak dining chairs under $1,500 in my library.",
-          "What is still not ordered for the Dining Room?",
-          "Export the Dining Room as an Excel schedule."
+          "Save this product to my Dining Room: https://vaarnii.com/products/1001-hans-pendant",
+          "Make an FF&E schedule for the Dining Room with VAT.",
+          "Find warm oak dining chairs under $1,500 in my library."
         ],
         "brandColor": "#111111",
         "brandColorDark": "#F5F5F5",
@@ -51,6 +51,18 @@
       "review": {
         "test_cases": {
           "positive": [
+            {
+              "description": "Save a product from a supplier link",
+              "prompt": "Save this to my Dining Room: https://vaarnii.com/products/1001-hans-pendant",
+              "tools_triggered": "aalto_list_collections, aalto_save_product_from_url",
+              "expected_behavior": "Finds the Dining Room collection, saves the link into it and reports what Aalto filled in (the 1001 Hans Pendant by Vaarnii, with its price and images). If the details are still being read, it says so and checks once with aalto_get_product. It uses one of the workspace's monthly AI product imports."
+            },
+            {
+              "description": "Turn a project list into an FF&E schedule with VAT",
+              "prompt": "Make an FF&E schedule for the Dining Room with VAT, as an Excel file.",
+              "tools_triggered": "aalto_list_collections, aalto_get_collection_context, aalto_export_collection",
+              "expected_behavior": "Finds the Dining Room, checks the workspace tax settings (UK VAT, default rate 20%), exports it as Excel with tax_display set to both, and returns a download link valid for 15 minutes. It describes the workspace's UK VAT setup and default rate, and says the file shows the rate used on each line rather than claiming every line uses 20%. The schedule lists the products with prices before VAT, the VAT and the total including VAT. If the workspace had no Tax region it would export without VAT and tell you to set one under Settings > Workspace > Tax region."
+            },
             {
               "description": "Search the library in plain language",
               "prompt": "Find a pendant light in my Aalto library.",
@@ -64,36 +76,27 @@
               "expected_behavior": "Finds the Dining Room collection, reports its $25,000 budget and the total so far, and lists the five products not yet ordered: Osa Dining Chair, Ceramic Tableware Set (shortlisted), Lámina Pendant Lamp, Glassware and Ceramic Vases (saved)."
             },
             {
-              "description": "Find alternatives to a product",
-              "prompt": "Show me products in my library similar to the Ceramic Vases.",
-              "tools_triggered": "aalto_search_products, aalto_find_similar",
-              "expected_behavior": "Finds the Ceramic Vases, then lists similar products from the test workspace (for example the Ceramic Tableware Set) with brand and price, and does not invent products that are not in the library."
-            },
-            {
               "description": "Change a status with a preview first",
               "prompt": "Mark the Osa Dining Chair as ordered in the Dining Room.",
               "tools_triggered": "aalto_search_products, aalto_update_products",
               "expected_behavior": "Shows a preview of the change (status shortlisted to ordered) and asks for confirmation. After the user confirms, applies it and reports what changed."
-            },
-            {
-              "description": "Export a schedule",
-              "prompt": "Export the Dining Room as a CSV.",
-              "tools_triggered": "aalto_list_collections, aalto_export_collection",
-              "expected_behavior": "Returns a download link for a CSV of the Dining Room's ten products and says the link is valid for 15 minutes."
             }
           ],
           "negative": [
             {
               "description": "Deleting is not supported",
-              "prompt": "Delete every product in my Dining Room."
+              "prompt": "Delete every product in my Dining Room.",
+              "expected_behavior": "Declines, because Aalto never lets a connected app delete products or collections. It says you can delete them in Aalto itself, and offers to move the products or change their status instead. No tool changes anything."
             },
             {
               "description": "Sharing and publishing are not available to connected apps",
-              "prompt": "Make my Dining Room board public and send me the share link."
+              "prompt": "Make my Dining Room board public and send me the share link.",
+              "expected_behavior": "Declines, because sharing and publishing change who can see your work and are kept in Aalto, not in connected apps. It tells you to share the board from Aalto. No tool is called to change sharing."
             },
             {
               "description": "Billing and account settings are out of scope",
-              "prompt": "Upgrade my Aalto plan and change the card on file."
+              "prompt": "Upgrade my Aalto plan and change the card on file.",
+              "expected_behavior": "Declines, because plans, payment and account settings are never available to connected apps. It tells you to change them in Aalto under Settings > Billing. No tool is called."
             }
           ]
         },
@@ -101,7 +104,7 @@
         "commerce_description": "Aalto does not sell products or take payments through this plugin. It stores product references a designer saved from supplier websites."
       },
       "publication": {
-        "release_notes": "First release: search, product detail, project budgets and status, save from a link, create and update products, organise collections, spreadsheet and photo import, and CSV, Excel and PDF export."
+        "release_notes": "Adds tax to the schedule flow: aalto_whoami and aalto_get_collection_context now show your workspace Tax region (VAT, GST or sales tax), and aalto_export_collection takes an optional tax_display (off, exclusive, inclusive or both) for CSV, Excel and PDF schedules. Read tools now declare that they never change or delete anything."
       }
     }
   }
